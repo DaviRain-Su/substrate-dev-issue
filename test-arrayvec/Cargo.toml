@@ -1,0 +1,42 @@
+[package]
+name = "test-arrayvec"
+version = "0.1.0"
+edition = "2021"
+build = "build.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+# polkadot-v0.9.12 at this verion will occurs duplicate lang item in crate 'std'
+#  error: duplicate lang item in crate `std` (which `arrayvec` depends on): `panic_impl`.
+#     |
+#     = note: the lang item is first defined in crate `sp_io` (which `test_arrayvec` depends on)
+#     = note: first definition in `sp_io` loaded from /Users/davirain/learn-substrate/test-arrayvec/target/debug/wbuild/test-arrayvec/target/wasm32-unknown-unknown/release/deps/libsp_io-1113331bc2e5106c.rmeta
+#     = note: second definition in `std` loaded from /Users/davirain/.rustup/toolchains/nightly-aarch64-apple-darwin/lib/rustlib/wasm32-unknown-unknown/lib/libstd-d9a8e4ca4a56d589.rlib
+
+#   error: duplicate lang item in crate `std` (which `arrayvec` depends on): `oom`.
+#     |
+#     = note: the lang item is first defined in crate `sp_io` (which `test_arrayvec` depends on)
+#     = note: first definition in `sp_io` loaded from /Users/davirain/learn-substrate/test-arrayvec/target/debug/wbuild/test-arrayvec/target/wasm32-unknown-unknown/release/deps/libsp_io-1113331bc2e5106c.rmeta
+#     = note: second definition in `std` loaded from /Users/davirain/.rustup/toolchains/nightly-aarch64-apple-darwin/lib/rustlib/wasm32-unknown-unknown/lib/libstd-d9a8e4ca4a56d589.rlib
+
+#   warning: `test-arrayvec` (lib) generated 2 warnings
+#   error: could not compile `test-arrayvec` due to 2 previous errors; 2 warnings emitted
+# warning: build failed, waiting for other jobs to finish...
+# error: build failed
+
+# 如果将branch = "polkadot-v0.9.12" 将会出现上面的错误。
+
+[build-dependencies.substrate-wasm-builder]
+branch = 'polkadot-v0.9.13'
+git    = 'https://github.com/paritytech/substrate.git'
+
+[dependencies]
+sp-io = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.13", default-features = false}
+blake2-rfc = { version = "0.2.18", default-features = false }
+
+[features]
+default = ["std"]
+std = [
+    "sp-io/std",
+    "blake2-rfc/std",
+]
